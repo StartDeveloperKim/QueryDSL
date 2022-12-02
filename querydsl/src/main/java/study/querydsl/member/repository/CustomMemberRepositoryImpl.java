@@ -1,34 +1,22 @@
-package study.querydsl.repository;
+package study.querydsl.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import study.querydsl.domain.Member;
-import study.querydsl.domain.QMember;
+import study.querydsl.member.domain.Member;
+import study.querydsl.member.domain.QMember;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 @Slf4j
 @Repository
-public class QueryDslMemberRepositoryImpl implements QueryDslMemberRepository{
+public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory query;
 
-    public QueryDslMemberRepositoryImpl(EntityManager em) {
+    public CustomMemberRepositoryImpl(EntityManager em) {
         this.query = new JPAQueryFactory(em);
-    }
-
-    @Override
-    public Member findById(Long id) {
-        QMember qMember = QMember.member;
-        log.info("findById");
-
-        return query.select(qMember)
-                .from(qMember)
-                .where(qMember.id.eq(id))
-                .fetchFirst();
     }
 
     @Override
@@ -51,6 +39,27 @@ public class QueryDslMemberRepositoryImpl implements QueryDslMemberRepository{
                 .select(member)
                 .from(member)
                 .orderBy(member.age.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Member> findByTeamId(Long id) {
+        QMember member = QMember.member;
+        log.info("findByTeamId");
+        return query
+                .select(member)
+                .from(member)
+                .where(member.team.id.eq(id))
+                .fetch();
+    }
+
+    @Override
+    public List<Member> searchMemberByAge(Long age) {
+        QMember member = QMember.member;
+        return query
+                .selectFrom(member)
+                .where(member.age.loe(age))
+                .offset(10).limit(20)
                 .fetch();
     }
 }
