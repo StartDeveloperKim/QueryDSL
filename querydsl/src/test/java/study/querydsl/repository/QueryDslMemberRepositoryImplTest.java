@@ -1,11 +1,13 @@
 package study.querydsl.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.member.domain.Member;
+import study.querydsl.member.dto.MemberDto;
 import study.querydsl.member.repository.MemberRepository;
 import study.querydsl.team.domain.Team;
 import study.querydsl.team.repository.TeamRepository;
@@ -73,6 +75,40 @@ class QueryDslMemberRepositoryImplTest {
         //then
         for (Member member : members) {
             System.out.println("member.getName() = " + member.getName());
+        }
+    }
+
+    @Test
+    void fetchJoin을_이용해서_멤버이름으로_멤버와팀_조회() {
+        //given
+        Team savedTeam = teamRepository.save(new Team("테스트1"));
+        Member testMember = memberRepository.save(new Member("테스트멤버", 25L, savedTeam));
+        //when
+        Member findMember = memberRepository.findMemberAndTeam("테스트멤버");
+        Team team1 = findMember.getTeam();
+        //then
+        assertThat(savedTeam.getId()).isEqualTo(team1.getId());
+        checkSaveMemberAndFindMember(findMember, testMember);
+    }
+
+    @Test
+    @DisplayName("멤버 이름만 조회하기")
+    void findMemberNameByAge() {
+        //given, when
+        List<String> memberNameByAge = memberRepository.findMemberNameByAge(60L);
+        //then
+        for (String name : memberNameByAge) {
+            System.out.println("name = " + name);
+        }
+    }
+    
+    @Test
+    void MemberDto로_조회하기() {
+        //given, when
+        List<MemberDto> findMemberDtos = memberRepository.findMemberDto(80L);
+        //then
+        for (MemberDto findMemberDto : findMemberDtos) {
+            System.out.println("findMemberDto.toString() = " + findMemberDto.toString());
         }
     }
 
