@@ -30,6 +30,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+	implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly group: 'com.h2database', name: 'h2', version: '1.4.200'

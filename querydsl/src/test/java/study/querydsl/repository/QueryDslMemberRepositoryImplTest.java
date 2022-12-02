@@ -103,12 +103,30 @@ class QueryDslMemberRepositoryImplTest {
     }
     
     @Test
-    void MemberDto로_조회하기() {
+    void MemberDto로_조회하기_프로퍼티접근() {
         //given, when
         List<MemberDto> findMemberDtos = memberRepository.findMemberDto(80L);
         //then
         for (MemberDto findMemberDto : findMemberDtos) {
             System.out.println("findMemberDto.toString() = " + findMemberDto.toString());
+        }
+    }
+
+    @Test
+    void 멤버이름과_나이로_검색하기() {
+        //given, when
+        List<Member> findMember = memberRepository.searchMemberByNameAndAge("김민우", 20L);
+        //then
+        checkSaveMemberAndFindMember(findMember.get(0), savedMember);
+    }
+    
+    @Test
+    void 멤버이름을_검색조건에_넣지않고_검색하기() {
+        //given, when
+        List<Member> findMembers = memberRepository.searchMemberByNameAndAge(null, 30L);
+        //then
+        for (Member findMember : findMembers) {
+            System.out.println("findMember.toString() = " + findMember.toString());
         }
     }
 

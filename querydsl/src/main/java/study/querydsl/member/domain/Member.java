@@ -1,10 +1,12 @@
 package study.querydsl.member.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 import study.querydsl.team.domain.Team;
 
 import javax.persistence.*;
 
+@ToString
 @Getter
 @Entity
 public class Member {

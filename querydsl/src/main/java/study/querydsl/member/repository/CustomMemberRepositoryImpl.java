@@ -1,16 +1,21 @@
 package study.querydsl.member.repository;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import study.querydsl.member.domain.Member;
 import study.querydsl.member.domain.QMember;
 import study.querydsl.member.dto.MemberDto;
 
 import javax.persistence.EntityManager;
+import java.util.BitSet;
 import java.util.List;
 
+import static org.springframework.util.StringUtils.*;
 import static study.querydsl.team.domain.QTeam.team;
 
 @Slf4j
@@ -99,4 +104,27 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 .where(member.age.goe(age))
                 .fetch();
     }
+
+    @Override
+    public List<Member> searchMemberByNameAndAge(String name, Long age) {
+        QMember member = QMember.member;
+        return searchMember(name, age, member);
+    }
+
+    private List<Member> searchMember(String name, Long age, QMember member) {
+        return query
+                .selectFrom(member)
+                .where(nameEql(name, member), ageEql(age, member))
+                .fetch();
+    }
+
+    private BooleanExpression ageEql(Long age, QMember member) {
+        if (age==null) return null;
+        return member.age.eq(age);
+    }
+
+    private BooleanExpression nameEql(String name, QMember member) {
+        return hasText(name) ? member.name.eq(name) : null;
+    }
+
 }

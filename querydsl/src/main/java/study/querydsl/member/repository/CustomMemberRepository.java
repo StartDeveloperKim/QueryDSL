@@ -20,4 +20,6 @@ public interface CustomMemberRepository {
     List<String> findMemberNameByAge(Long age);
 
     List<MemberDto> findMemberDto(Long age);
+
+    List<Member> searchMemberByNameAndAge(String name, Long age);
 }
